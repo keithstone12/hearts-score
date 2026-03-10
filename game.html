@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+<meta charset="UTF-8">
+<title>Hearts Live Game</title>
+
+<style>
+
+body{
+font-family:Arial;
+background:#0b1020;
+color:white;
+padding:20px;
+}
+
+.card{
+background:#1e293b;
+padding:20px;
+border-radius:20px;
+margin-bottom:20px;
+}
+
+.grid{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(150px,1fr));
+gap:10px;
+}
+
+input{
+padding:10px;
+border-radius:10px;
+border:none;
+background:#334155;
+color:white;
+}
+
+button{
+padding:12px;
+border-radius:10px;
+border:none;
+font-weight:bold;
+cursor:pointer;
+background:#f43f5e;
+color:white;
+}
+
+table{
+width:100%;
+border-collapse:collapse;
+}
+
+th,td{
+padding:10px;
+border-bottom:1px solid #334155;
+text-align:center;
+}
+
+#winner{
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+background:black;
+display:none;
+align-items:center;
+justify-content:center;
+flex-direction:column;
+font-size:40px;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<h1>Hearts Live Game</h1>
+
+<div class="card">
+
+<div id="gameTime"></div>
+<div id="roundTime"></div>
+
+</div>
+
+<div class="card">
+
+<h2>Add Round</h2>
+
+<div id="inputs" class="grid"></div>
+
+<button onclick="addRound()">Add Round</button>
+
+</div>
+
+<div class="card">
+
+<h2>Scoreboard</h2>
+
+<table>
+
+<thead>
+<tr id="head"></tr>
+</thead>
+
+<tbody id="rows"></tbody>
+
+<tfoot>
+<tr id="foot"></tr>
+</tfoot>
+
+</table>
+
+</div>
+
+<div id="winner">
+
+<div id="winnerText"></div>
+<div id="ranking"></div>
+
+</div>
+
+<script>
+
+const KEY="heartsGame"
+let state=JSON.parse(localStorage.getItem(KEY))
+
+setInterval(()=>{
+
+state.gameSeconds++
+state.roundSeconds++
+
+updateTimers()
+
+localStorage.setItem(KEY,JSON.stringify(state))
+
+},1000)
+
+function time(sec){
+
+let m=Math.floor(sec/60)
+let s=sec%60
+
+return m+":"+String(s).padStart(2,"0")
+
+}
+
+function updateTimers(){
+
+document.getElementById("gameTime").innerText="Game "+time(state.gameSeconds)
+document.getElementById("roundTime").innerText="Round "+time(state.roundSeconds)
+
+}
+
+function renderInputs(){
+
+const box=document.getElementById("inputs")
+box.innerHTML=""
+
+state.players.forEach((p,i)=>{
+
+box.innerHTML+=`
+<div>
+<label>${p}</label>
+<input id="s${i}" type="number" value="0">
+</div>
+`
+
+})
+
+}
+
+function totals(){
+
+let t=new Array(state.players.length).fill(0)
+
+state.rounds.forEach(r=>{
+
+r.forEach((v,i)=>t[i]+=v)
+
+})
+
+return t
+
+}
+
+function addRound(){
+
+let r=[]
+
+state.players.forEach((_,i)=>{
+
+r.push(parseInt(document.getElementById("s"+i).value)||0)
+
+})
+
+state.rounds.push(r)
+state.times.push(state.roundSeconds)
+state.roundSeconds=0
+
+localStorage.setItem(KEY,JSON.stringify(state))
+
+render()
+
+checkWinner()
+
+}
+
+function render(){
+
+let head="<th>Round</th><th>Time</th>"
+
+state.players.forEach(p=>head+="<th>"+p+"</th>")
+
+head+="<th>Total</th>"
+
+document.getElementById("head").innerHTML=head
+
+let rows=""
+
+state.rounds.forEach((r,i)=>{
+
+let tot=r.reduce((a,b)=>a+b,0)
+
+rows+=`<tr><td>${i+1}</td><td>${time(state.times[i])}</td>${r.map(v=>"<td>"+v+"</td>").join("")}<td>${tot}</td></tr>`
+
+})
+
+document.getElementById("rows").innerHTML=rows
+
+}
+
+function checkWinner(){
+
+let t=totals()
+
+if(!t.some(x=>x>=state.target))return
+
+let ranked=state.players.map((p,i)=>({name:p,score:t[i]})).sort((a,b)=>a.score-b.score)
+
+document.getElementById("winnerText").innerText=ranked[0].name+" Wins!"
+
+document.getElementById("ranking").innerHTML=ranked.map((r,i)=>`${i+1}. ${r.name} — ${r.score}`).join("<br>")
+
+document.getElementById("winner").style.display="flex"
+
+}
+
+renderInputs()
+render()
+
+</script>
+
+</body>
+</html>
