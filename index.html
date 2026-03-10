@@ -1,131 +1,344 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Hearts Score Keeper</title>
-
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Hearts Score Keeper • Setup</title>
 <style>
+  :root{
+    --bg:#081120;
+    --bg2:#0d1b2f;
+    --panel:rgba(13,27,47,.88);
+    --panel2:rgba(18,32,56,.95);
+    --border:rgba(148,163,184,.22);
+    --border-strong:rgba(96,165,250,.35);
+    --text:#f8fafc;
+    --muted:#94a3b8;
+    --accent:#38bdf8;
+    --accent2:#8b5cf6;
+    --accent3:#22c55e;
+    --danger:#f43f5e;
+    --shadow:0 18px 48px rgba(0,0,0,.38);
+    --radius:20px;
+  }
 
-body{
-font-family:Arial, Helvetica, sans-serif;
-background:#0b1020;
-color:white;
-padding:30px;
-}
+  *{box-sizing:border-box}
 
-.card{
-background:#1e293b;
-padding:20px;
-border-radius:20px;
-max-width:600px;
-margin:auto;
-}
+  body{
+    margin:0;
+    font-family:Inter,Arial,Helvetica,sans-serif;
+    color:var(--text);
+    background:
+      radial-gradient(circle at top left, rgba(56,189,248,.15), transparent 28%),
+      radial-gradient(circle at top right, rgba(139,92,246,.14), transparent 28%),
+      linear-gradient(180deg,var(--bg),var(--bg2));
+    min-height:100vh;
+    padding:18px 14px 28px;
+  }
 
-.grid{
-display:grid;
-grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
-gap:12px;
-margin-top:15px;
-}
+  .wrap{
+    max-width:760px;
+    margin:0 auto;
+  }
 
-input,select{
-padding:12px;
-border-radius:12px;
-border:none;
-background:#334155;
-color:white;
-}
+  .hero,
+  .card{
+    background:var(--panel);
+    border:1px solid var(--border);
+    border-radius:var(--radius);
+    box-shadow:var(--shadow);
+    backdrop-filter:blur(12px);
+    -webkit-backdrop-filter:blur(12px);
+  }
 
-button{
-margin-top:20px;
-padding:14px;
-border-radius:14px;
-border:none;
-background:#f43f5e;
-color:white;
-font-weight:bold;
-cursor:pointer;
-width:100%;
-}
+  .hero{
+    padding:20px;
+    margin-bottom:16px;
+  }
 
+  h1{
+    margin:0 0 8px;
+    font-size:2rem;
+    line-height:1.02;
+    letter-spacing:-.03em;
+  }
+
+  .sub{
+    margin:0;
+    color:var(--muted);
+    line-height:1.5;
+    font-size:.98rem;
+  }
+
+  .badges{
+    display:flex;
+    flex-wrap:wrap;
+    gap:8px;
+    margin-top:14px;
+  }
+
+  .badge{
+    padding:8px 12px;
+    border-radius:999px;
+    border:1px solid var(--border);
+    background:rgba(255,255,255,.04);
+    color:#dbeafe;
+    font-size:.86rem;
+  }
+
+  .card{
+    padding:18px;
+  }
+
+  h2{
+    margin:0 0 6px;
+    font-size:1.2rem;
+  }
+
+  .note{
+    margin:0 0 16px;
+    color:var(--muted);
+    line-height:1.5;
+    font-size:.94rem;
+  }
+
+  .grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:12px;
+  }
+
+  .field{
+    display:block;
+  }
+
+  .field.full{
+    grid-column:1 / -1;
+  }
+
+  label{
+    display:block;
+    margin-bottom:8px;
+    font-size:.92rem;
+    font-weight:700;
+    color:#e2e8f0;
+  }
+
+  input,select{
+    width:100%;
+    padding:14px 14px;
+    border-radius:16px;
+    border:1px solid var(--border);
+    background:rgba(255,255,255,.05);
+    color:var(--text);
+    outline:none;
+    font-size:1rem;
+    transition:.18s ease;
+  }
+
+  input:focus,select:focus{
+    border-color:var(--border-strong);
+    box-shadow:0 0 0 4px rgba(56,189,248,.12);
+  }
+
+  .names{
+    display:grid;
+    grid-template-columns:1fr;
+    gap:10px;
+  }
+
+  .actions{
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+    margin-top:18px;
+  }
+
+  button, .btn{
+    appearance:none;
+    border:none;
+    border-radius:16px;
+    padding:14px 16px;
+    font-weight:800;
+    font-size:1rem;
+    cursor:pointer;
+    text-decoration:none;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    transition:transform .15s ease, box-shadow .15s ease;
+  }
+
+  button:active,.btn:active{transform:scale(.99)}
+
+  .primary{
+    background:linear-gradient(135deg,var(--accent),#2563eb);
+    color:white;
+    box-shadow:0 12px 26px rgba(37,99,235,.28);
+  }
+
+  .secondary{
+    background:linear-gradient(135deg,var(--accent2),#6366f1);
+    color:white;
+    box-shadow:0 12px 26px rgba(99,102,241,.26);
+  }
+
+  .ghost{
+    background:rgba(255,255,255,.05);
+    color:var(--text);
+    border:1px solid var(--border);
+  }
+
+  .footer{
+    margin-top:14px;
+    color:var(--muted);
+    font-size:.88rem;
+    line-height:1.45;
+  }
+
+  @media (max-width:560px){
+    .grid{grid-template-columns:1fr}
+    h1{font-size:1.8rem}
+  }
 </style>
 </head>
-
 <body>
+  <div class="wrap">
+    <section class="hero">
+      <h1>Hearts Score Keeper</h1>
+      <p class="sub">
+        Mobile-first setup page for a polished live Hearts scoring app. Enter players, choose the target score, and open the live game screen.
+      </p>
+      <div class="badges">
+        <div class="badge">3–5 players</div>
+        <div class="badge">Mobile friendly</div>
+        <div class="badge">Live scoring</div>
+        <div class="badge">Winner rankings</div>
+      </div>
+    </section>
 
-<div class="card">
+    <section class="card">
+      <h2>Game Setup</h2>
+      <p class="note">Set your game options below. The live page will use these settings automatically.</p>
 
-<h1>Hearts Score Keeper</h1>
+      <div class="grid">
+        <div class="field">
+          <label for="playerCount">Number of Players</label>
+          <select id="playerCount">
+            <option value="3">3 Players</option>
+            <option value="4" selected>4 Players</option>
+            <option value="5">5 Players</option>
+          </select>
+        </div>
 
-<label>Number of Players</label>
+        <div class="field">
+          <label for="targetScore">Target Score</label>
+          <input id="targetScore" type="number" min="1" step="1" value="100" />
+        </div>
 
-<select id="playerCount">
-<option value="3">3</option>
-<option value="4" selected>4</option>
-<option value="5">5</option>
-</select>
+        <div class="field full">
+          <label>Player Names</label>
+          <div class="names" id="playerNames"></div>
+        </div>
+      </div>
 
-<label style="margin-top:15px;">Target Score</label>
+      <div class="actions">
+        <button class="primary" id="startBtn" type="button">Start Live Game</button>
+        <a class="btn secondary" href="game.html">Open Live Game Page</a>
+        <button class="ghost" id="sampleBtn" type="button">Fill Sample Names</button>
+      </div>
 
-<input id="targetScore" type="number" value="100">
-
-<div id="playerNames" class="grid"></div>
-
-<button onclick="startGame()">Start Game</button>
-
-</div>
+      <div class="footer">
+        Your setup is stored in your browser so the live game page stays synced.
+      </div>
+    </section>
+  </div>
 
 <script>
+const STORAGE_KEY = "hearts-mobile-v1";
 
-const KEY="heartsGame"
-
-function renderNames(){
-
-const count=parseInt(document.getElementById("playerCount").value)
-const box=document.getElementById("playerNames")
-
-box.innerHTML=""
-
-for(let i=0;i<count;i++){
-
-box.innerHTML+=`<input id="p${i}" placeholder="Player ${i+1} name">`
-
+function defaultState(){
+  return {
+    playerCount: 4,
+    targetScore: 100,
+    players: ["Player 1","Player 2","Player 3","Player 4","Player 5"],
+    rounds: [],
+    roundTimes: [],
+    gameSeconds: 0,
+    roundSeconds: 0,
+    startedAt: null,
+    finished: false,
+    rankings: []
+  };
 }
 
+function loadState(){
+  try{
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if(!raw) return defaultState();
+    return {...defaultState(), ...JSON.parse(raw)};
+  }catch(e){
+    return defaultState();
+  }
 }
 
-document.getElementById("playerCount").addEventListener("change",renderNames)
+function saveState(state){
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+}
+
+function renderPlayerInputs(){
+  const count = parseInt(document.getElementById("playerCount").value, 10);
+  const state = loadState();
+  const box = document.getElementById("playerNames");
+  box.innerHTML = "";
+
+  for(let i = 0; i < count; i++){
+    const wrap = document.createElement("div");
+    wrap.innerHTML = `<input id="name${i}" type="text" value="${state.players[i] || `Player ${i+1}`}" placeholder="Player ${i+1}" />`;
+    box.appendChild(wrap);
+  }
+}
+
+function fillSamples(){
+  const samples = ["Seth","Olive","Penelope","Rene","Tyler"];
+  const count = parseInt(document.getElementById("playerCount").value, 10);
+  for(let i = 0; i < count; i++){
+    const input = document.getElementById(`name${i}`);
+    if(input) input.value = samples[i] || `Player ${i+1}`;
+  }
+}
 
 function startGame(){
+  const count = parseInt(document.getElementById("playerCount").value, 10);
+  const target = parseInt(document.getElementById("targetScore").value, 10) || 100;
 
-const count=parseInt(document.getElementById("playerCount").value)
-const target=parseInt(document.getElementById("targetScore").value)||100
+  const state = defaultState();
+  state.playerCount = count;
+  state.targetScore = target;
 
-let players=[]
+  for(let i = 0; i < count; i++){
+    const val = document.getElementById(`name${i}`).value.trim();
+    state.players[i] = val || `Player ${i+1}`;
+  }
 
-for(let i=0;i<count;i++){
-
-players.push(document.getElementById(`p${i}`).value||`Player ${i+1}`)
-
+  state.startedAt = Date.now();
+  saveState(state);
+  window.location.href = "game.html";
 }
 
-localStorage.setItem(KEY,JSON.stringify({
-players:players,
-target:target,
-rounds:[],
-times:[],
-gameSeconds:0,
-roundSeconds:0
-}))
+function init(){
+  const state = loadState();
+  document.getElementById("playerCount").value = String(state.playerCount || 4);
+  document.getElementById("targetScore").value = state.targetScore || 100;
 
-window.location="game.html"
+  renderPlayerInputs();
 
+  document.getElementById("playerCount").addEventListener("change", renderPlayerInputs);
+  document.getElementById("sampleBtn").addEventListener("click", fillSamples);
+  document.getElementById("startBtn").addEventListener("click", startGame);
 }
 
-renderNames()
-
+init();
 </script>
-
 </body>
 </html>
