@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hearts Score Keeper</title>
+
+<style>
+
+body{
+font-family:Arial, Helvetica, sans-serif;
+background:#0b1020;
+color:white;
+padding:30px;
+}
+
+.card{
+background:#1e293b;
+padding:20px;
+border-radius:20px;
+max-width:600px;
+margin:auto;
+}
+
+.grid{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+gap:12px;
+margin-top:15px;
+}
+
+input,select{
+padding:12px;
+border-radius:12px;
+border:none;
+background:#334155;
+color:white;
+}
+
+button{
+margin-top:20px;
+padding:14px;
+border-radius:14px;
+border:none;
+background:#f43f5e;
+color:white;
+font-weight:bold;
+cursor:pointer;
+width:100%;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="card">
+
+<h1>Hearts Score Keeper</h1>
+
+<label>Number of Players</label>
+
+<select id="playerCount">
+<option value="3">3</option>
+<option value="4" selected>4</option>
+<option value="5">5</option>
+</select>
+
+<label style="margin-top:15px;">Target Score</label>
+
+<input id="targetScore" type="number" value="100">
+
+<div id="playerNames" class="grid"></div>
+
+<button onclick="startGame()">Start Game</button>
+
+</div>
+
+<script>
+
+const KEY="heartsGame"
+
+function renderNames(){
+
+const count=parseInt(document.getElementById("playerCount").value)
+const box=document.getElementById("playerNames")
+
+box.innerHTML=""
+
+for(let i=0;i<count;i++){
+
+box.innerHTML+=`<input id="p${i}" placeholder="Player ${i+1} name">`
+
+}
+
+}
+
+document.getElementById("playerCount").addEventListener("change",renderNames)
+
+function startGame(){
+
+const count=parseInt(document.getElementById("playerCount").value)
+const target=parseInt(document.getElementById("targetScore").value)||100
+
+let players=[]
+
+for(let i=0;i<count;i++){
+
+players.push(document.getElementById(`p${i}`).value||`Player ${i+1}`)
+
+}
+
+localStorage.setItem(KEY,JSON.stringify({
+players:players,
+target:target,
+rounds:[],
+times:[],
+gameSeconds:0,
+roundSeconds:0
+}))
+
+window.location="game.html"
+
+}
+
+renderNames()
+
+</script>
+
+</body>
+</html>
