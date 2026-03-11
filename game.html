@@ -9,7 +9,6 @@
     --bg:#07101c;
     --bg2:#0c1930;
     --panel:rgba(10,20,35,.88);
-    --panel2:rgba(15,23,42,.96);
     --border:rgba(148,163,184,.22);
     --border-strong:rgba(56,189,248,.34);
     --text:#f8fafc;
@@ -37,10 +36,7 @@
     padding:14px 12px 28px;
   }
 
-  .wrap{
-    max-width:860px;
-    margin:0 auto;
-  }
+  .wrap{max-width:860px;margin:0 auto}
 
   .glass{
     background:var(--panel);
@@ -51,10 +47,7 @@
     -webkit-backdrop-filter:blur(14px);
   }
 
-  .card{
-    padding:16px;
-    margin-bottom:14px;
-  }
+  .card{padding:16px;margin-bottom:14px}
 
   .topbar{
     display:flex;
@@ -78,8 +71,13 @@
     line-height:1.45;
   }
 
+  .top-actions{
+    display:flex;
+    gap:8px;
+    flex-wrap:wrap;
+  }
+
   .link-btn{
-    flex-shrink:0;
     text-decoration:none;
     border:1px solid var(--border);
     background:rgba(255,255,255,.05);
@@ -116,10 +114,7 @@
     font-weight:900;
   }
 
-  h2{
-    margin:0 0 6px;
-    font-size:1.18rem;
-  }
+  h2{margin:0 0 6px;font-size:1.18rem}
 
   .note{
     margin:0 0 14px;
@@ -246,7 +241,7 @@
     margin-top:14px;
   }
 
-  button, .btn{
+  button{
     appearance:none;
     border:none;
     border-radius:16px;
@@ -445,9 +440,7 @@
     box-shadow:0 0 0 1px rgba(245,158,11,.16) inset;
   }
 
-  .place-gold .rank-place{
-    color:#fbbf24;
-  }
+  .place-gold .rank-place{ color:#fbbf24; }
 
   .place-silver{
     border-color:rgba(203,213,225,.45);
@@ -455,9 +448,7 @@
     box-shadow:0 0 0 1px rgba(203,213,225,.12) inset;
   }
 
-  .place-silver .rank-place{
-    color:#e2e8f0;
-  }
+  .place-silver .rank-place{ color:#e2e8f0; }
 
   .place-bronze{
     border-color:rgba(180,83,9,.5);
@@ -465,9 +456,7 @@
     box-shadow:0 0 0 1px rgba(180,83,9,.12) inset;
   }
 
-  .place-bronze .rank-place{
-    color:#d97706;
-  }
+  .place-bronze .rank-place{ color:#d97706; }
 
   .winner-actions{
     display:grid;
@@ -491,6 +480,26 @@
     opacity:.95;
     border-radius:3px;
     animation:fall linear forwards;
+  }
+
+  .rules-list{
+    text-align:left;
+    display:grid;
+    gap:10px;
+    margin-top:14px;
+  }
+
+  .rule-item{
+    padding:12px;
+    border-radius:14px;
+    border:1px solid var(--border);
+    background:rgba(255,255,255,.04);
+    color:#e2e8f0;
+    line-height:1.5;
+  }
+
+  .rule-item strong{
+    color:white;
   }
 
   @keyframes fall{
@@ -518,6 +527,11 @@
       align-items:stretch;
     }
 
+    .top-actions{
+      width:100%;
+      flex-direction:column;
+    }
+
     .link-btn{
       text-align:center;
     }
@@ -531,7 +545,10 @@
         <h1>Live Hearts Game</h1>
         <p id="subtitle">Mobile live scoring with timers, pass info, and rankings.</p>
       </div>
-      <a class="link-btn" href="index.html">Back to Setup</a>
+      <div class="top-actions">
+        <a class="link-btn" href="index.html">Back to Setup</a>
+        <button class="link-btn" id="rulesBtn" type="button">How to Play</button>
+      </div>
     </div>
 
     <section class="glass card">
@@ -610,7 +627,30 @@
 
       <div class="winner-actions">
         <button class="gold" id="closeWinnerBtn" type="button">Close</button>
-        <a class="btn ghost" href="index.html">Back to Setup</a>
+        <a class="link-btn" href="index.html">Back to Setup</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="overlay" id="rulesOverlay">
+    <div class="winner-panel">
+      <div class="winner-kicker">How to Play Hearts</div>
+      <h2 class="winner-name" style="font-size:clamp(1.8rem,7vw,3rem);">Game Rules</h2>
+      <p class="winner-sub">A quick guide for anyone at the table.</p>
+
+      <div class="rules-list">
+        <div class="rule-item"><strong>Goal:</strong> Finish with the lowest total score.</div>
+        <div class="rule-item"><strong>Hearts:</strong> Each heart is worth 1 point.</div>
+        <div class="rule-item"><strong>Queen of Spades:</strong> Worth 13 points.</div>
+        <div class="rule-item"><strong>Shoot the Moon:</strong> If one player takes all point cards, they score 0 and everyone else gets 26.</div>
+        <div class="rule-item"><strong>Passing:</strong> The app shows the direction and number of cards to pass each round.</div>
+        <div class="rule-item"><strong>Breaking Hearts:</strong> Hearts usually cannot be led until they have been played on a previous trick, unless a player has only hearts.</div>
+        <div class="rule-item"><strong>Winning:</strong> Once someone reaches the target score, the player with the lowest total wins.</div>
+      </div>
+
+      <div class="winner-actions">
+        <button class="primary" id="closeRulesBtn" type="button">Close Rules</button>
+        <button class="ghost" id="rulesGotItBtn" type="button">Got It</button>
       </div>
     </div>
   </div>
@@ -940,6 +980,14 @@ function renderWinner(state){
   overlay.style.display = "flex";
 }
 
+function openRules(){
+  document.getElementById("rulesOverlay").style.display = "flex";
+}
+
+function closeRules(){
+  document.getElementById("rulesOverlay").style.display = "none";
+}
+
 function tick(){
   const state = loadState();
   if(!state.finished){
@@ -979,6 +1027,10 @@ function init(){
   document.getElementById("closeWinnerBtn").addEventListener("click", () => {
     document.getElementById("winnerOverlay").style.display = "none";
   });
+
+  document.getElementById("rulesBtn").addEventListener("click", openRules);
+  document.getElementById("closeRulesBtn").addEventListener("click", closeRules);
+  document.getElementById("rulesGotItBtn").addEventListener("click", closeRules);
 
   refresh();
   if(timerHandle) clearInterval(timerHandle);
