@@ -144,6 +144,18 @@
     font-size:.88rem;
   }
 
+  .pill.good{
+    border-color:rgba(34,197,94,.55);
+    color:#dcfce7;
+    background:rgba(34,197,94,.12);
+  }
+
+  .pill.bad{
+    border-color:rgba(244,63,94,.5);
+    color:#fecdd3;
+    background:rgba(244,63,94,.10);
+  }
+
   .score-grid{
     display:grid;
     grid-template-columns:repeat(2,minmax(0,1fr));
@@ -155,19 +167,23 @@
     border:1px solid var(--border);
     border-radius:18px;
     padding:12px;
-    display:flex;
-    flex-direction:column;
-    align-items:center;
-    justify-content:center;
-    min-height:100px;
+    min-height:108px;
   }
 
   .score-box label{
+    display:block;
     font-weight:800;
     margin-bottom:10px;
     text-align:center;
     color:#e2e8f0;
     font-size:.96rem;
+  }
+
+  .score-row{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:10px;
   }
 
   .score-input{
@@ -196,6 +212,31 @@
   .score-input:focus{
     border-color:var(--border-strong);
     box-shadow:0 0 0 4px rgba(56,189,248,.12);
+  }
+
+  .player-total{
+    min-width:64px;
+    text-align:center;
+    padding:10px 8px;
+    border-radius:14px;
+    border:1px solid var(--border);
+    background:rgba(255,255,255,.05);
+  }
+
+  .player-total-label{
+    display:block;
+    font-size:.68rem;
+    letter-spacing:.08em;
+    text-transform:uppercase;
+    color:var(--muted);
+    margin-bottom:4px;
+  }
+
+  .player-total-value{
+    display:block;
+    font-size:1.05rem;
+    font-weight:900;
+    color:#e2e8f0;
   }
 
   .actions{
@@ -382,7 +423,6 @@
   }
 
   .rank-place{
-    color:#fbbf24;
     font-weight:900;
     font-size:.86rem;
     text-transform:uppercase;
@@ -397,6 +437,36 @@
     text-align:right;
     font-weight:900;
     font-size:1.05rem;
+  }
+
+  .place-gold{
+    border-color:rgba(245,158,11,.55);
+    background:linear-gradient(90deg, rgba(245,158,11,.16), rgba(255,255,255,.05));
+    box-shadow:0 0 0 1px rgba(245,158,11,.16) inset;
+  }
+
+  .place-gold .rank-place{
+    color:#fbbf24;
+  }
+
+  .place-silver{
+    border-color:rgba(203,213,225,.45);
+    background:linear-gradient(90deg, rgba(203,213,225,.14), rgba(255,255,255,.05));
+    box-shadow:0 0 0 1px rgba(203,213,225,.12) inset;
+  }
+
+  .place-silver .rank-place{
+    color:#e2e8f0;
+  }
+
+  .place-bronze{
+    border-color:rgba(180,83,9,.5);
+    background:linear-gradient(90deg, rgba(180,83,9,.18), rgba(255,255,255,.05));
+    box-shadow:0 0 0 1px rgba(180,83,9,.12) inset;
+  }
+
+  .place-bronze .rank-place{
+    color:#d97706;
   }
 
   .winner-actions{
@@ -437,10 +507,6 @@
     .totals-grid,
     .score-grid{
       grid-template-columns:1fr;
-    }
-
-    .score-box{
-      min-height:92px;
     }
 
     .rank-row{
@@ -491,12 +557,13 @@
 
     <section class="glass card">
       <h2>Add Round Scores</h2>
-      <p class="note">Enter each player’s points. Inputs are sized for quick two-digit score entry on mobile.</p>
+      <p class="note">Enter each player’s points. Running totals are shown beside each score box.</p>
 
       <div class="pill-row">
         <div class="pill" id="nextRoundPill">Next Round 1</div>
         <div class="pill" id="passDirectionPill">Pass Left</div>
         <div class="pill" id="passCardsPill">Pass 3 Cards</div>
+        <div class="pill bad" id="roundTotalPill">Entered Points 0 / 26</div>
       </div>
 
       <div class="score-grid" id="scoreGrid"></div>
@@ -633,6 +700,25 @@ function getPassInfo(state){
   return pattern[roundIndex % pattern.length];
 }
 
+function getCurrentEnteredTotal(state){
+  let total = 0;
+  for(let i = 0; i < state.playerCount; i++){
+    const input = document.getElementById(`score${i}`);
+    if(input && input.value.trim() !== ""){
+      total += Math.max(0, parseInt(input.value, 10) || 0);
+    }
+  }
+  return total;
+}
+
+function updateRoundTotalPill(state){
+  const entered = getCurrentEnteredTotal(state);
+  const pill = document.getElementById("roundTotalPill");
+  pill.textContent = `Entered Points ${entered} / 26`;
+  pill.classList.remove("good","bad");
+  pill.classList.add(entered === 26 ? "good" : "bad");
+}
+
 function renderStats(state){
   document.getElementById("targetDisplay").textContent = state.targetScore;
   document.getElementById("gameTimer").textContent = formatLong(state.gameSeconds);
@@ -649,16 +735,31 @@ function renderStats(state){
 
 function renderScoreInputs(state){
   const box = document.getElementById("scoreGrid");
+  const totals = getTotals(state);
   box.innerHTML = "";
+
   activePlayers(state).forEach((name, i) => {
     const wrap = document.createElement("div");
     wrap.className = "score-box";
     wrap.innerHTML = `
       <label for="score${i}">${name}</label>
-      <input class="score-input" id="score${i}" type="number" min="0" step="1" inputmode="numeric" placeholder="--" />
+      <div class="score-row">
+        <input class="score-input" id="score${i}" type="number" min="0" step="1" inputmode="numeric" placeholder="--" />
+        <div class="player-total">
+          <span class="player-total-label">Total</span>
+          <span class="player-total-value">${totals[i]}</span>
+        </div>
+      </div>
     `;
     box.appendChild(wrap);
   });
+
+  for(let i = 0; i < state.playerCount; i++){
+    const input = document.getElementById(`score${i}`);
+    input.addEventListener("input", () => updateRoundTotalPill(loadState()));
+  }
+
+  updateRoundTotalPill(state);
 }
 
 function renderMoonButtons(state){
@@ -717,6 +818,7 @@ function clearInputs(state){
     const input = document.getElementById(`score${i}`);
     if(input) input.value = "";
   }
+  updateRoundTotalPill(state);
 }
 
 function buildRankings(state){
@@ -778,6 +880,8 @@ function undoLastRound(){
 }
 
 function resetGame(){
+  if(!confirm("Are you sure you want to reset the game?")) return;
+
   const current = loadState();
   const fresh = defaultState();
   fresh.playerCount = current.playerCount;
@@ -817,13 +921,20 @@ function renderWinner(state){
   document.getElementById("winnerSub").textContent =
     `Final standings based on the lowest total score after someone reached ${state.targetScore}.`;
 
-  document.getElementById("rankings").innerHTML = rankings.map((item, i) => `
-    <div class="rank-row">
-      <div class="rank-place">${placeNames[i] || `${i+1}th Place`}</div>
-      <div class="rank-name">${item.name}</div>
-      <div class="rank-score">${item.score}</div>
-    </div>
-  `).join("");
+  document.getElementById("rankings").innerHTML = rankings.map((item, i) => {
+    let placeClass = "";
+    if(i === 0) placeClass = "place-gold";
+    if(i === 1) placeClass = "place-silver";
+    if(i === 2) placeClass = "place-bronze";
+
+    return `
+      <div class="rank-row ${placeClass}">
+        <div class="rank-place">${placeNames[i] || `${i+1}th Place`}</div>
+        <div class="rank-name">${item.name}</div>
+        <div class="rank-score">${item.score}</div>
+      </div>
+    `;
+  }).join("");
 
   makeConfetti();
   overlay.style.display = "flex";
