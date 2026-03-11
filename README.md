@@ -9,7 +9,6 @@ A mobile-first 2-page Hearts scoring app.
 - `.nojekyll`
 
 ## Features
-- mobile-friendly layout
 - 3 to 5 players
 - target score
 - clean short score inputs
